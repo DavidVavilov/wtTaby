@@ -1,11 +1,15 @@
-#wtTaby David Vavilov 2020
+#wtTaby - David Vavilov 2020
 """
 An module for the tabyFunctions
 """
 import json 
 from osFunctions import osFunctions
 
-class tabyFunctions:    
+class tabyFunctions: 
+    """
+    A class of functions that relate
+    to the wtTaby system
+    """   
     def setup():
         """
         Setup the wtTaby program with a path to the
@@ -33,6 +37,7 @@ class tabyFunctions:
             print("wtTaby setup completed!!")
             setupFile = open('tabySetup.json','w')
             json.dump(jsonSetup, setupFile, indent=2)
+            tabyFunctions.saveTabs()
 
     def autoSetup():
         """
@@ -64,13 +69,14 @@ class tabyFunctions:
                 print("wtTaby setup completed!!")
                 setupFile = open('tabySetup.json','w')
                 json.dump(jsonSetup, setupFile, indent=2)
+                tabyFunctions.saveTabs() #Saves the tabs into the 'tabs.json' file
             else:
                 print("Can't find 'settings.json'")
 
 
     def newTaby():
         """
-        Add new Tabs 
+        Add new Tabs to the 'settings.json' and saves the tab into the 'tabs.json' file
         """
         filePath = "testing.json"
         terminalSettingsFileRead = open(filePath,'r')
@@ -94,30 +100,93 @@ class tabyFunctions:
         terminalSettingsFile = open(filePath,'w')
         json.dump(data, terminalSettingsFile, indent=4)
         print(tabName,"Taby Added to the Windows Terminal!")
+        terminalSettingsFile.close()
+        tabyFunctions.saveTabs() #Saves the tabs into the 'tabs.json' file
 
+    def saveTabs():
+        """
+        Saves the Tabs from the 'settings.json' file
+        into a new json file called 'tabs.json'
+        """
+        try:
+            #setupFile = open('tabySetup.json','r')
+            #jsonFile = json.load(setupFile)
+            #filePath = jsonFile['settingsPath']
+            #terminalSettingsFile = open(filePath,'r')
+            tabsDict = { "tabs" : []}
+            terminalSettingsFile = open("testing.json",'r')
+            tabsJSONFile = open("tabs.json",'w')
+            string = terminalSettingsFile.read()
+            data = json.loads(string)
+            for profile in data['profiles']['list']:
+                dictExample = {"GUID" : "", "tabName" : ""}
+                dictExample["GUID"] = profile['guid']
+                dictExample["tabName"] = profile['name']
+                tabsDict["tabs"].append(dictExample)
+            
+            json.dump(tabsDict,tabsJSONFile, indent=4)
+            
+        
+        except Exception as error:
+            print(error)
+
+    
 
     def printTabs(): 
         """
         Shows the tabs that are in the settings.json file
         """
-        setupFile = open('tabySetup.json','r')
-        jsonFile = json.load(setupFile)
-        filePath = jsonFile['settingsPath']
+        try:
+            #setupFile = open('tabySetup.json','r')
+            #jsonFile = json.load(setupFile)
+            #filePath = jsonFile['settingsPath']
 
-        terminalSettingsFile = open(filePath,'r')
-        string = terminalSettingsFile.read()
-        data = json.loads(string)
-        for profile in data['profiles']['list']:
-            print("GUID -" ,profile['guid'])
-            print("Tab Name -" ,profile['name'])
-            print("---------------------------")
+            #terminalSettingsFile = open(filePath,'r')
+            terminalSettingsFile = open("testing.json",'r')
+            string = terminalSettingsFile.read()
+            data = json.loads(string)
+            for profile in data['profiles']['list']:
+                print("GUID -" ,profile['guid'])
+                print("Tab Name -" ,profile['name'])
+                print("---------------------------")
+        
+        except Exception as error:
+            print(error)
            
     def setDefault():
+        """
+        Sets a new default tab
+        """
         filePath = "testing.json"
         terminalSettingsFileRead = open(filePath,'r')
+        tabsFile = open('tabs.json','r')
+        jsonTabs = json.load(tabsFile)
         string = terminalSettingsFileRead.read()
+        terminalSettingsFileRead.close()
         data = json.loads(string)
-        print(data['defaultProfile'])
+        for tab in jsonTabs['tabs']:
+            if(tab['GUID'] ==  data['defaultProfile']):
+                defaultTabName = tab['tabName']
+            
+        print(f"Your Default tab is : Name - {defaultTabName}, GUID - {data['defaultProfile']},")
+        newDefaultTab = input("What tab would you like to be the default?")
+        getGuid = None
+        for tab in jsonTabs['tabs']:
+            if(tab['tabName'] ==  newDefaultTab):
+                getGuid = tab['GUID']
+        
+        if(getGuid is not None):
+            terminalSettingsFileWrite = open(filePath,'w')
+            data['defaultProfile'] = getGuid
+            try:
+                json.dump(data,terminalSettingsFileWrite, indent=4)
+                print("New Default tab has been set!!")
+            except Exception as error:
+                print(error)
+        else:
+            print("Tab not found!")
+
+        
 
 
     def help():

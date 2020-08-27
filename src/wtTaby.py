@@ -16,7 +16,6 @@ def main():
             if(len(sys.argv) > 2 and sys.argv[2] == '-a'):
                 tabyFunctions.autoSetup()
             else:
-                print('reg')
                 tabyFunctions.setup()
         
         if(function == "--newTaby"):
@@ -33,6 +32,9 @@ def main():
         
         if(function == "--default"):
             tabyFunctions.setDefault()
+
+        if(function == "--save"):
+            tabyFunctions.saveTabs()
     else:
         print("wtTaby")
         print("To run: wtTaby [FUNCTION] [OPERATOR(If needed)]")
@@ -40,7 +42,7 @@ def main():
         print("Setup - \n '--setup' : To setup the system, Add '-a' to auto search for the settings file")
         print("New Tab - \n '--newTaby' : To add a new tab")
         print("Show - \n '--show' : Shows the tabs that are in the settings.json file")
-    
+        print("Set Default - '--default'")
     
 
 

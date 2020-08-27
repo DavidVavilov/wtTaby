@@ -6,6 +6,7 @@ class osFunctions:
     def getGUID():
         """
         A Function that generates an GUID from the powershell
+        And returns it
         """
         powershellOutput = subprocess.check_output(['powershell.exe',"'{'+[guid]::NewGuid().ToString()+'}'"], shell=True)
         guid = powershellOutput.decode()
@@ -23,7 +24,11 @@ class osFunctions:
         print("Searching for settings.json .....")
         for root, dir, files in os.walk(search_path):
             if(filename in files):
-                pathList.append(os.path.join(root, filename))
+                path = os.path.join(root, filename)
+                if("Microsoft.WindowsTerminal" in path):
+                    return path
+                else:
+                    pathList.append(path)
 
         if(len(pathList) > 0):
             for path in pathList:
