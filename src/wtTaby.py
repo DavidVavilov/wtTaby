@@ -3,11 +3,18 @@ import os
 import sys
 import subprocess
 import json
+import configparser
 from osFunctions import osFunctions
 from tabyFunctions import tabyFunctions
-
-
+ 
 def main():
+    """
+    The main function.
+    Gets argv's from the command prompt
+    """
+    config = configparser.ConfigParser()
+    config.read('config/config.ini')
+
     if(len(sys.argv) > 1):
         function = sys.argv[1]
         
@@ -27,21 +34,36 @@ def main():
             tabyFunctions.printTabs()
         
         if(function == "--search"):
-            osFunctions.searchForSettings()
+            print("Path -",osFunctions.searchForSettings())
+        
+        if(function == "--edit"):
+            if(len(sys.argv) > 2):
+                tabName = sys.argv[2]
+                tabyFunctions.editTaby(tabName)
         
         if(function == "--default"):
             tabyFunctions.setDefault()
 
         if(function == "--save"):
             tabyFunctions.saveTabs()
+
+        if(function == "-v"):
+            """
+            Prints the version and when it was last updated
+            Via the 'config.ini' file
+            """
+            WTTABY_VERSION = config['wtTaby']['version']
+            WTTABY_LAST_DATE = config['wtTaby']['lastUpdate']
+            print(f"wtTaby - version {WTTABY_VERSION}")
+            print(f"Last Update - {WTTABY_LAST_DATE}")
     else:
         print("wtTaby")
         print("To run: wtTaby [FUNCTION] [OPERATOR(If needed)]")
         print("Functions - ")
-        print("Setup - \n '--setup' : To setup the system, Add '-a' to auto search for the settings file")
-        print("New Tab - \n '--newTaby' : To add a new tab")
-        print("Show - \n '--show' : Shows the tabs that are in the settings.json file")
-        print("Set Default - '--default'")
+        print(" Setup - \n '--setup' : To setup the system, Add '-a' to auto search for the settings file\n")
+        print(" New Tab - \n '--newTaby' : To add a new tab\n")
+        print(" Show - \n '--show' : Shows the tabs that are in the settings.json file\n")
+        print(" Set Default - \n '--default' : Sets a new default tab ")
     
 
 

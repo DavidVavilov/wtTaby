@@ -5,6 +5,7 @@ An module for the tabyFunctions
 import json 
 from osFunctions import osFunctions
 
+
 class tabyFunctions: 
     """
     A class of functions that relate
@@ -145,6 +146,7 @@ class tabyFunctions:
             terminalSettingsFile = open("testing.json",'r')
             string = terminalSettingsFile.read()
             data = json.loads(string)
+            print("Windows Terminal Tabs - ")
             for profile in data['profiles']['list']:
                 print("GUID -" ,profile['guid'])
                 print("Tab Name -" ,profile['name'])
@@ -187,13 +189,41 @@ class tabyFunctions:
             print("Tab not found!")
 
         
+    def editTaby(tabyName):
+        """
+        A function that gets a name of a tab and allows
+        the user to edit that tab
+        Input: tabyName (Name of the tab)
+        """
+        foundTabs = []
+        tabsFile = open("tabs.json",'r')
+        tabs = json.load(tabsFile)
+        for tab in tabs["tabs"]:
+            if(tabyName.lower() == tab["tabName"].lower()):
+                foundTabs.append(tab)
+
+        if(len(foundTabs) > 1):
+            print(f"Found {len(foundTabs)} tabs - ")
+            for foundTab in foundTabs:
+                print(f"{foundTabs.index(foundTab) + 1}. {foundTab}")
+
+        elif(len(foundTabs) == 1):
+            print("Found one tab!!")
+            print(foundTabs[0])
+
+        else:
+            print("Taby wasnt found!!")
 
 
     def help():
+        """
+        An help menu
+        """
         print("wtTaby - Help menu!")
         print("To run: wtTaby [FUNCTION] [OPERATOR(If needed)]")
         print("Functions - ")
-        print("Setup - \n '--setup' : To setup the system, Add '-a' to auto search for the settings file")
-        print("New Tab - \n '--newTaby' : To add a new tab")
-        print("Show - \n '--show' : Shows the tabs that are in the settings.json file")
+        print(" Setup - \n '--setup' : To setup the system, Add '-a' to auto search for the settings file\n")
+        print(" New Tab - \n '--newTaby' : To add a new tab\n")
+        print(" Show - \n '--show' : Shows the tabs that are in the settings.json file\n")
+        print(" Set Default - \n '--default' : Sets a new default tab ")
 
