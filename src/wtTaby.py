@@ -8,7 +8,6 @@ from tabyFunctions import tabyFunctions
 
 
 def main():
-    #path = """C:/Users/Home/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"""
     if(len(sys.argv) > 1):
         function = sys.argv[1]
         
