@@ -10,7 +10,7 @@ class tabyFunctions:
     """
     A class of functions that relate
     to the wtTaby system
-    """   
+    """
     def setup():
         """
         Setup the wtTaby program with a path to the
@@ -74,7 +74,6 @@ class tabyFunctions:
             else:
                 print("Can't find 'settings.json'")
 
-
     def newTaby():
         """
         Add new Tabs to the 'settings.json' and saves the tab into the 'tabs.json' file
@@ -131,8 +130,6 @@ class tabyFunctions:
         except Exception as error:
             print(error)
 
-    
-
     def printTabs(): 
         """
         Shows the tabs that are in the settings.json file
@@ -187,13 +184,13 @@ class tabyFunctions:
                 print(error)
         else:
             print("Tab not found!")
-
         
     def editTaby(tabyName):
         """
         A function that gets a name of a tab and allows
         the user to edit that tab
         Input: tabyName (Name of the tab)
+        Example for input from command line - 'wtTaby.py --edit TABYNAME', If name has couple of words use - 'wtTaby.py --edit "TABY NAME"'
         """
         foundTabs = []
         tabsFile = open("tabs.json",'r')
@@ -207,13 +204,94 @@ class tabyFunctions:
             for foundTab in foundTabs:
                 print(f"{foundTabs.index(foundTab) + 1}. {foundTab}")
 
+            try:
+                chosenTab = int(input("Choose a tab to edit (1,2,...):"))
+                tabGUID = foundTabs[chosenTab - 1]["GUID"]
+                print(tabGUID)
+                terminalSettingsFile = open("testing.json",'r')
+                string = terminalSettingsFile.read()
+                data = json.loads(string)
+                tabsList = data["profiles"]["list"]
+                dictKeys = []
+                
+                for tabSettings in tabsList:
+                    tabSettingsGUID = tabSettings['guid']
+                    if(tabSettingsGUID == tabGUID):
+                        print("found",tabSettings)
+
+                        for key in tabSettings.keys():
+                            dictKeys.append(key)
+                        dictKeys.remove('guid')
+                        print("Current settings - ")
+                        for key in dictKeys:
+                            print(f"{key.title()} - {tabSettings[key]}")
+
+                        keyToEdit = ""
+                        while(keyToEdit != "q"):
+                            keyToEdit = input(f"Choose a key to edit - [{', '.join(dictKeys)}], Enter 'q' to exit: ")
+                            if(keyToEdit in dictKeys):
+                                value = input(f"Enter a value for {keyToEdit}: ")
+                                tabSettings[keyToEdit] = value
+                                print(f"{keyToEdit.title()} was edited to {value}")
+                            elif(keyToEdit == "q"):
+                                print("Quiting edit tab....")
+                            else:
+                                print("Key was not found")
+
+                terminalSettingsFileWrite = open("testing.json",'w')
+                try:
+                    json.dump(data,terminalSettingsFileWrite, indent=4)
+                    terminalSettingsFileWrite.close()
+                    tabyFunctions.saveTabs()
+                except Exception as error:
+                    print(error)
+            except IndexError:
+                print("Unknown tab.")
+
         elif(len(foundTabs) == 1):
             print("Found one tab!!")
             print(foundTabs[0])
+            tabGUID = foundTabs[0]["GUID"]
+            terminalSettingsFile = open("testing.json",'r')
+            string = terminalSettingsFile.read()
+            terminalSettingsFile.close()
+            data = json.loads(string)
+            tabsList = data["profiles"]["list"]
+            dictKeys = []
+            for tabSettings in tabsList:
+                tabSettingsGUID = tabSettings['guid']
+                if(tabSettingsGUID == tabGUID):
+                    for key in tabSettings.keys():
+                        dictKeys.append(key)
+                    dictKeys.remove('guid')
+                    print("Current settings - ")
+                    for key in dictKeys:
+                        print(f"    {key.title()} - {tabSettings[key]}")
+                        
+                    keyToEdit = ""
+                    while(keyToEdit != "q"):
+                        keyToEdit = input(f"Choose a key to edit - [{', '.join(dictKeys)}], Enter 'q' to exit: ")
+                        if(keyToEdit in dictKeys):
+                            value = input(f"Enter a value for {keyToEdit}: ")
+                            tabSettings[keyToEdit] = value
+                            print(f"{keyToEdit.title()} was edited to {value}")
+                        elif(keyToEdit == "q"):
+                            print("Quiting edit tab....")
+
+                        else:
+                            print("Key was not found")
+
+            terminalSettingsFileWrite = open("testing.json",'w')
+            try:
+                json.dump(data,terminalSettingsFileWrite, indent=4)
+                terminalSettingsFileWrite.close()
+            
+            except Exception as error:
+                print(error)
+
 
         else:
             print("Taby wasnt found!!")
-
 
     def help():
         """
@@ -224,6 +302,7 @@ class tabyFunctions:
         print("Functions - ")
         print(" Setup - \n '--setup' : To setup the system, Add '-a' to auto search for the settings file\n")
         print(" New Tab - \n '--newTaby' : To add a new tab\n")
+        print(" Edit a taby - \n '--edit [TABY NAME]', If name has couple words use - \"TABY NAME\"\n")
         print(" Show - \n '--show' : Shows the tabs that are in the settings.json file\n")
         print(" Set Default - \n '--default' : Sets a new default tab ")
 
