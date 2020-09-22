@@ -2,16 +2,19 @@
 """
 An module for the tabyFunctions
 """
+import os
 import json 
 from osFunctions import osFunctions
-
 
 class tabyFunctions: 
     """
     A class of functions that relate
     to the wtTaby system
     """
-    def setup():
+    def __init__(self):
+        self.currDir = os.getcwd()
+
+    def setup(self):
         """
         Setup the wtTaby program with a path to the
         Microsoft Windows Terminal settings.json file
@@ -36,11 +39,11 @@ class tabyFunctions:
             profileName = input('Enter profile name: ')
             jsonSetup['profileName'] = profileName
             print("wtTaby setup completed!!")
-            setupFile = open('tabySetup.json','w')
+            setupFile = open(f'{self.currDir}/tabySetup.json','w')
             json.dump(jsonSetup, setupFile, indent=2)
             tabyFunctions.saveTabs()
 
-    def autoSetup():
+    def autoSetup(self):
         """
         Setup the wtTaby program (auto) with a path to the
         Microsoft Windows Terminal settings.json file
@@ -68,13 +71,13 @@ class tabyFunctions:
                 profileName = input('Enter profile name: ')
                 jsonSetup['profileName'] = profileName
                 print("wtTaby setup completed!!")
-                setupFile = open('tabySetup.json','w')
+                setupFile = open(f'{self.currDir}/tabySetup.json','w')
                 json.dump(jsonSetup, setupFile, indent=2)
                 tabyFunctions.saveTabs() #Saves the tabs into the 'tabs.json' file
             else:
                 print("Can't find 'settings.json'")
 
-    def newTaby():
+    def newTaby(self):
         """
         Add new Tabs to the 'settings.json' and saves the tab into the 'tabs.json' file
         """
@@ -101,9 +104,9 @@ class tabyFunctions:
         json.dump(data, terminalSettingsFile, indent=4)
         print(tabName,"Taby Added to the Windows Terminal!")
         terminalSettingsFile.close()
-        tabyFunctions.saveTabs() #Saves the tabs into the 'tabs.json' file
+        tabyFunctions.saveTabs(self) #Saves the tabs into the 'tabs.json' file
 
-    def saveTabs():
+    def saveTabs(self):
         """
         Saves the Tabs from the 'settings.json' file
         into a new json file called 'tabs.json'
@@ -115,7 +118,7 @@ class tabyFunctions:
             #terminalSettingsFile = open(filePath,'r')
             tabsDict = { "tabs" : []}
             terminalSettingsFile = open("testing.json",'r')
-            tabsJSONFile = open("tabs.json",'w')
+            tabsJSONFile = open(f"{self.currDir}/tabs.json",'w')
             string = terminalSettingsFile.read()
             data = json.loads(string)
             for profile in data['profiles']['list']:
@@ -130,7 +133,7 @@ class tabyFunctions:
         except Exception as error:
             print(error)
 
-    def printTabs(): 
+    def printTabs(self): 
         """
         Shows the tabs that are in the settings.json file
         """
@@ -152,13 +155,13 @@ class tabyFunctions:
         except Exception as error:
             print(error)
            
-    def setDefault():
+    def setDefault(self):
         """
         Sets a new default tab
         """
         filePath = "testing.json"
         terminalSettingsFileRead = open(filePath,'r')
-        tabsFile = open('tabs.json','r')
+        tabsFile = open(f'{self.currDir}/tabs.json','r')
         jsonTabs = json.load(tabsFile)
         string = terminalSettingsFileRead.read()
         terminalSettingsFileRead.close()
@@ -185,7 +188,7 @@ class tabyFunctions:
         else:
             print("Tab not found!")
         
-    def editTaby(tabyName):
+    def editTaby(self, tabyName):
         """
         A function that gets a name of a tab and allows
         the user to edit that tab
@@ -193,7 +196,7 @@ class tabyFunctions:
         Example for input from command line - 'wtTaby.py --edit TABYNAME', If name has couple of words use - 'wtTaby.py --edit "TABY NAME"'
         """
         foundTabs = []
-        tabsFile = open("tabs.json",'r')
+        tabsFile = open(f"{self.currDir}/tabs.json",'r')
         tabs = json.load(tabsFile)
         for tab in tabs["tabs"]:
             if(tabyName.lower() == tab["tabName"].lower()):
@@ -285,7 +288,7 @@ class tabyFunctions:
             try:
                 json.dump(data,terminalSettingsFileWrite, indent=4)
                 terminalSettingsFileWrite.close()
-            
+                tabyFunctions.saveTabs(self)
             except Exception as error:
                 print(error)
 
@@ -293,7 +296,28 @@ class tabyFunctions:
         else:
             print("Taby wasnt found!!")
 
-    def help():
+    def deleteTab(self,tabyName):
+        foundTabs = []
+        tabsFile = open(f"{self.currDir}/tabs.json",'r')
+        tabs = json.load(tabsFile)
+        for tab in tabs["tabs"]:
+            if(tabyName.lower() == tab["tabName"].lower()):
+                foundTabs.append(tab)
+
+        if(len(foundTabs) > 1):
+            print(f"Found {len(foundTabs)} tabs - ")
+            for foundTab in foundTabs:
+                print(f"{foundTabs.index(foundTab) + 1}. {foundTab}")
+
+        elif(len(foundTabs) == 1):
+            print(f"Found tab -")
+            for foundTab in foundTabs:
+                print(f"{foundTabs.index(foundTab) + 1}. {foundTab}")
+        else:
+            print(foundTabs)
+
+
+    def help(self):
         """
         An help menu
         """
@@ -305,4 +329,7 @@ class tabyFunctions:
         print(" Edit a taby - \n '--edit [TABY NAME]', If name has couple words use - \"TABY NAME\"\n")
         print(" Show - \n '--show' : Shows the tabs that are in the settings.json file\n")
         print(" Set Default - \n '--default' : Sets a new default tab ")
+
+
+
 
