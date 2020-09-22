@@ -12,26 +12,27 @@ def main():
     The main function.
     Gets argv's from the command prompt
     """
+    currDir = os.getcwd()
     config = configparser.ConfigParser()
-    config.read('config/config.ini')
-
+    config.read(f'{currDir}/config/config.ini')
+    tabyFuncs = tabyFunctions()
     if(len(sys.argv) > 1):
         function = sys.argv[1]
         
         if(function == "--setup"):
             if(len(sys.argv) > 2 and sys.argv[2] == '-a'):
-                tabyFunctions.autoSetup()
+                tabyFuncs.autoSetup()
             else:
-                tabyFunctions.setup()
+                tabyFuncs.setup()
         
         if(function == "--newTaby"):
-            tabyFunctions.newTaby()
+            tabyFuncs.newTaby()
         
         if(function == "--help"):
-            tabyFunctions.help()
+            tabyFuncs.help()
         
         if(function == "--show"):
-            tabyFunctions.printTabs()
+            tabyFuncs.printTabs()
         
         if(function == "--search"):
             print("Path -",osFunctions.searchForSettings())
@@ -39,13 +40,18 @@ def main():
         if(function == "--edit"):
             if(len(sys.argv) > 2):
                 tabName = sys.argv[2]
-                tabyFunctions.editTaby(tabName)
+                tabyFuncs.editTaby(tabName)
+        
+        if(function == "--delete"):
+            if(len(sys.argv) > 2):
+                tabName = sys.argv[2]
+                tabyFuncs.deleteTab(tabName)
         
         if(function == "--default"):
-            tabyFunctions.setDefault()
+            tabyFuncs.setDefault()
 
         if(function == "--save"):
-            tabyFunctions.saveTabs()
+            tabyFuncs.saveTabs()
 
         if(function == "-v"):
             """
@@ -62,8 +68,10 @@ def main():
         print("Functions - ")
         print(" Setup - \n '--setup' : To setup the system, Add '-a' to auto search for the settings file\n")
         print(" New Tab - \n '--newTaby' : To add a new tab\n")
+        print(" Edit a taby - \n '--edit [TABY NAME]', If name has couple words use - \"TABY NAME\"\n")
         print(" Show - \n '--show' : Shows the tabs that are in the settings.json file\n")
         print(" Set Default - \n '--default' : Sets a new default tab ")
+
     
 
 
