@@ -79,6 +79,10 @@ def main():
 
     
 def checkUpdate(currConfig):
+    """
+    A function that if updates are available for wtTaby
+    Input : currConfig (The content from the local config file)
+    """
     API_LINK = "https://api.github.com/repos/DavidVavilov/wtTaby/contents/src/config/config.ini"
     apiResponse = requests.get(API_LINK).json()
     CONFIG_URL = apiResponse['download_url']
