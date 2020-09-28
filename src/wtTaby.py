@@ -5,10 +5,11 @@ import subprocess
 import json
 import configparser
 import requests
-from packaging import version
+import webFunctions
 from osFunctions import osFunctions
 from tabyFunctions import tabyFunctions
- 
+
+
 def main():
     """
     The main function.
@@ -20,43 +21,43 @@ def main():
     tabyFuncs = tabyFunctions()
     if(len(sys.argv) > 1):
         function = sys.argv[1]
-        
+
         if(function == "--setup"):
             if(len(sys.argv) > 2 and sys.argv[2] == '-a'):
                 tabyFuncs.autoSetup()
             else:
                 tabyFuncs.setup()
-        
+
         if(function == "--newTaby"):
             tabyFuncs.newTaby()
-        
+
         if(function == "--help"):
             tabyFuncs.help()
-        
+
         if(function == "--show"):
             tabyFuncs.printTabs()
-        
+
         if(function == "--search"):
             print("Path -",osFunctions.searchForSettings())
-        
+
         if(function == "--edit"):
             if(len(sys.argv) > 2):
                 tabName = sys.argv[2]
                 tabyFuncs.editTaby(tabName)
-        
+
         if(function == "--delete"):
             if(len(sys.argv) > 2):
                 tabName = sys.argv[2]
                 tabyFuncs.deleteTab(tabName)
-        
+
         if(function == "--default"):
             tabyFuncs.setDefault()
 
         if(function == "--save"):
             tabyFuncs.saveTabs()
-        
+
         if(function == "--checkUp"):
-            checkUpdate(config)
+            webFunctions.checkUpdate(config)
 
         if(function == "-v"):
             """
@@ -77,28 +78,8 @@ def main():
         print(" Show - \n '--show' : Shows the tabs that are in the settings.json file\n")
         print(" Set Default - \n '--default' : Sets a new default tab ")
 
-    
-def checkUpdate(currConfig):
-    """
-    A function that if updates are available for wtTaby
-    Input : currConfig (The content from the local config file)
-    """
-    API_LINK = "https://api.github.com/repos/DavidVavilov/wtTaby/contents/src/config/config.ini"
-    apiResponse = requests.get(API_LINK).json()
-    CONFIG_URL = apiResponse['download_url']
-    configFromGithub = configparser.ConfigParser()
-    try:
-        configResponse = requests.get(CONFIG_URL)
-        configFromGithub.read_string(str(configResponse.text))
-        versionFromGithub = configFromGithub['wtTaby']['version']
-        localversion = currConfig['wtTaby']['version']
-        if(version.parse(versionFromGithub) > version.parse(localversion)):
-            print(f"Update available to wtTaby version - {versionFromGithub}")
-        else:
-            print(f"No update available, wtTaby Version - {localversion}")
 
-    except Exception as e:
-        print("Checking updates is unavailable, Try again later.")
+
 
 
 if __name__=="__main__":
