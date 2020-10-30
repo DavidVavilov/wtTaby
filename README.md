@@ -11,4 +11,6 @@
 [Example]:https://github.com/DavidVavilov/wtTaby/blob/master/showcase/README.md
 [windowsTerminal]: https://github.com/microsoft/terminal
 [logo]: https://github.com/DavidVavilov/wtTaby/blob/master/img/logo.png
+
+**David Vavilov 2020**
  
