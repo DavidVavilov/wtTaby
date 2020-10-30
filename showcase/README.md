@@ -26,6 +26,11 @@ Functions -
  Set Default -
  '--default' : Sets a new default tab
 ```
+- Check for Updates - 
+```
+>wtTaby --checkUp
+No updates available, wtTaby Version - 0.0.1
+```
 - Option to show the tabs - 
 ```
 >wtTaby --show
