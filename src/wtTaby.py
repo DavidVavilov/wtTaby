@@ -78,9 +78,5 @@ def main():
         print(" Show - \n '--show' : Shows the tabs that are in the settings.json file\n")
         print(" Set Default - \n '--default' : Sets a new default tab ")
 
-
-
-
-
 if __name__=="__main__":
     main()
