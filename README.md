@@ -1,5 +1,6 @@
 ### wtTaby
 ![logo](img/logo.png)
+![ex](img/runEx.png)
 - (wtTaby is still in development!!)
 - A [Windows Terminal][windowsTerminal] tab managment system! 💻
 - Manage your Windows terminal tabs with wtTaby.
