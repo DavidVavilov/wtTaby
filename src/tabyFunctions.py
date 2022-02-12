@@ -25,7 +25,7 @@ class tabyFunctions:
             'profileName' :''
         }
 
-        try: #Checks if there si already a setup file
+        try: #Checks if there is already a setup file
             checkFile = open('tabySetup.json','r')
             print("wtTaby setup already exists!")
             jsonFile = json.load(checkFile)
